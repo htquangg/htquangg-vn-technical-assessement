@@ -13,7 +13,8 @@
     "start": "nx serve",
     "test": "nx test",
     "commitlint": "commitlint -c --config .commitlintrc.json -E --edit",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "nx": "nx"
   },
   "private": true,
   "dependencies": {
