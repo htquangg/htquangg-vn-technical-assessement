@@ -2,6 +2,11 @@
   "name": "htquangg-vn-technical-assessement",
   "version": "0.0.0",
   "license": "MIT",
+  "author": {
+    "name": "Alex Huynh",
+    "email": "htquangg@gmail.com",
+    "url": "https://www.linkedin.com/in/htquangg/"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nx build",
