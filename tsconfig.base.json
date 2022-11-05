@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@htquangg/api/common": ["libs/api/common/src/index.ts"],
+      "@htquangg/api/config": ["libs/api/config/src/index.ts"],
+      "@htquangg/api/core/customer": ["libs/api/core/customer/src/index.ts"],
+      "@htquangg/shared/utils": ["libs/shared/utils/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
