@@ -1,1 +1,1 @@
-export * from './lib/api-core-customer.module';
+export * from './lib';
