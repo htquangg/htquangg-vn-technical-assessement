@@ -1,6 +1,7 @@
 import {
   Get,
   Post,
+  Put,
   Controller,
   Body,
   Delete,
@@ -19,6 +20,7 @@ import { FindCustomerByIdQuery, FindCustomersQuery } from '../applications';
 import {
   CloseCustomerCommand,
   OpenCustomerCommand,
+  UpdateCustomerCommand,
 } from '../applications/commands/impl';
 
 import {
@@ -28,6 +30,8 @@ import {
   FindCustomerByIdParamDTO,
   FindCustomersQueryDTO,
   FindCustomersResponseDTO,
+  UpdateCustomerParamDTO,
+  UpdateCustomerBodyDTO,
 } from './dtos';
 import { ResponseDescription } from './response-description';
 
@@ -93,6 +97,21 @@ export class CustomerController {
   })
   async closeCustomer(@Param() param: DeleteCustomerParamDTO) {
     const command = new CloseCustomerCommand(param.id);
+    await this.commandBus.execute(command);
+  }
+
+  @Put('/:id')
+  @ApiResponse({ status: 200, description: ResponseDescription.OK })
+  @ApiBadRequestResponse({ description: ResponseDescription.BAD_REQUEST })
+  @ApiNotFoundResponse({ description: ResponseDescription.NOT_FOUND })
+  @ApiInternalServerErrorResponse({
+    description: ResponseDescription.INTERNAL_SERVER_ERROR,
+  })
+  async updateCustomer(
+    @Param() param: UpdateCustomerParamDTO,
+    @Body() body: UpdateCustomerBodyDTO,
+  ): Promise<void> {
+    const command = new UpdateCustomerCommand({ ...param, ...body });
     await this.commandBus.execute(command);
   }
 }

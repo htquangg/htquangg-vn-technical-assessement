@@ -4,3 +4,5 @@ export * from './find-customer-query.dto';
 export * from './find-customers-response.dto';
 export * from './find-customer-by-id-param.dto';
 export * from './find-customer-by-id-response.dto';
+export * from './update-customer-param.dto';
+export * from './update-customer-body.dto';

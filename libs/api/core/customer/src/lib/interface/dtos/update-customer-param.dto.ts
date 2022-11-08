@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FindCustomerByIdParamDTO {
+export class UpdateCustomerParamDTO {
   @ApiProperty({
     format: 'id',
-    example: '636a70c5c3f90e250beb35b8',
+    example: '636a5a2ef7ef166ca714feee',
   })
   readonly id: string;
 }

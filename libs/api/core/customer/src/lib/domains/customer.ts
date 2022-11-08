@@ -2,7 +2,11 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import * as bcrypt from 'bcrypt';
 import { ErrorMessage } from './error';
-import { CustomerClosedEvent, CustomerOpenedEvent } from './events';
+import {
+  CustomerClosedEvent,
+  CustomerOpenedEvent,
+  CustomerUpdatedEvent,
+} from './events';
 
 export type CusomerEssentialProperties = Required<{
   readonly id: string;
@@ -30,33 +34,26 @@ export interface Customer {
 }
 
 export class CustomerImplement extends AggregateRoot implements Customer {
-  private readonly id: string;
-  private readonly name: string;
-  private readonly email: string;
-  private password = '';
-  private balance = 0;
-  private readonly openedAt: Date = new Date();
-  private updatedAt: Date = new Date();
-  private closedAt: Date | null = null;
+  #properties: CustomerProperties = {
+    id: '-1',
+    name: '',
+    email: '',
+    password: '',
+    balance: 0,
+    openedAt: new Date(),
+    updatedAt: new Date(),
+    closedAt: null,
+  };
 
   constructor(
     properties: CusomerEssentialProperties & CustomerOptionalProperties,
   ) {
     super();
-    Object.assign(this, properties);
+    Object.assign(this.#properties, properties);
   }
 
   properties(): CustomerProperties {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      password: this.password,
-      balance: this.balance,
-      openedAt: this.openedAt,
-      updatedAt: this.updatedAt,
-      closedAt: this.closedAt,
-    };
+    return this.#properties;
   }
 
   open(password: string): void {
@@ -66,18 +63,33 @@ export class CustomerImplement extends AggregateRoot implements Customer {
 
   private setPassword(password: string): void {
     InternalServerErrorException;
-    if (this.password === '' || password === '')
+    if (this.#properties.password === '' || password === '')
       throw new InternalServerErrorException(ErrorMessage.CAN_NOT_SET_PASSWORD);
     const salt = bcrypt.genSaltSync();
-    this.password = bcrypt.hashSync(password, salt);
-    this.updatedAt = new Date();
+    this.#properties = {
+      ...this.#properties,
+      password: bcrypt.hashSync(password, salt),
+      updatedAt: new Date(),
+    };
   }
 
-  update: (data: Partial<Omit<CustomerProperties, 'password'>>) => void;
+  update(data: Partial<Omit<CustomerProperties, 'id' | 'password'>>) {
+    const { name, email } = data;
+    this.#properties = {
+      ...this.#properties,
+      name,
+      email,
+      updatedAt: new Date(),
+    };
+    this.apply(Object.assign(new CustomerUpdatedEvent(), this));
+  }
 
   close(): void {
-    this.closedAt = new Date();
-    this.updatedAt = new Date();
+    this.#properties = {
+      ...this.#properties,
+      closedAt: new Date(),
+      updatedAt: new Date(),
+    };
     this.apply(Object.assign(new CustomerClosedEvent(), this));
   }
 }

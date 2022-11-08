@@ -8,10 +8,11 @@ import {
   FindCustomersHandler,
   OpenCustomerHandler,
 } from './applications';
+import { UpdateCustomerHandler } from './applications/commands/handlers/update-customer.handler';
 import { CustomerOpenedHandler } from './applications/events';
 import { CustomerClosedHandler } from './applications/events/handlers/customer-closed.handler';
 import { InjectionToken } from './applications/injection.token';
-import { CustomerFactory } from './domains';
+import { CustomerFactory, CustomerUpdatedEvent } from './domains';
 import {
   CustomerEntity,
   CustomerRepositoryImplement,
@@ -39,6 +40,8 @@ const applications = [
   CustomerClosedHandler,
   FindCustomersHandler,
   FindCustomerByIdHandler,
+  UpdateCustomerHandler,
+  CustomerUpdatedEvent,
 ];
 
 const domains = [CustomerFactory];
