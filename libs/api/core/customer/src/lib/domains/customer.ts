@@ -1,13 +1,17 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
+import * as bcrypt from 'bcrypt';
+import { ErrorMessage } from './error';
+import { CustomerOpenedEvent } from './events';
 
 export type CusomerEssentialProperties = Required<{
   readonly id: string;
   readonly name: string;
   readonly email: string;
+  readonly password: string;
 }>;
 
 export type CustomerOptionalProperties = Partial<{
-  readonly password: string;
   readonly balance: number;
   readonly openedAt: Date;
   readonly updatedAt: Date;
@@ -25,7 +29,7 @@ export interface Customer {
   commit: () => void;
 }
 
-export class CustmerImplement extends AggregateRoot implements Customer {
+export class CustomerImplement extends AggregateRoot implements Customer {
   private readonly id: string;
   private readonly name: string;
   private readonly email: string;
@@ -55,7 +59,19 @@ export class CustmerImplement extends AggregateRoot implements Customer {
     };
   }
 
-  open: (password: string) => void;
+  open(password: string): void {
+    this.setPassword(password);
+    this.apply(Object.assign(new CustomerOpenedEvent(), this));
+  }
+
+  private setPassword(password: string): void {
+    InternalServerErrorException;
+    if (this.password === '' || password === '')
+      throw new InternalServerErrorException(ErrorMessage.CAN_NOT_SET_PASSWORD);
+    const salt = bcrypt.genSaltSync();
+    this.password = bcrypt.hashSync(password, salt);
+    this.updatedAt = new Date();
+  }
   update: (data: Partial<Omit<CustomerProperties, 'password'>>) => void;
   close: (password: string) => void;
 }
