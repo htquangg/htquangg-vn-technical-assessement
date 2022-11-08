@@ -41,7 +41,9 @@ export class CustomerRepositoryImplement implements CustomerRespository {
   }
 
   async findById(id: string): Promise<Customer | null> {
-    const entity = await this.customerModel.findById(id);
+    const entity = await this.customerModel.findById(id, {
+      deletedAt: { $eq: null },
+    });
     return entity ? this.entityToModel(entity) : null;
   }
 
