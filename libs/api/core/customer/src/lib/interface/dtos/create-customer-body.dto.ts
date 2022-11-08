@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class OpenCustomerBodyDTO {
+export class CreateCustomerBodyDTO {
   @IsString()
   @MinLength(2)
   @MaxLength(8)

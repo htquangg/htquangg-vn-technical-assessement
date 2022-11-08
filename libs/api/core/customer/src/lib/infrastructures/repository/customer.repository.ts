@@ -40,7 +40,11 @@ export class CustomerRepositoryImplement implements CustomerRespository {
     await this.customerModel.bulkWrite(entities);
   }
 
-  findById: (id: string) => Promise<Customer>;
+  async findById(id: string): Promise<Customer | null> {
+    const entity = await this.customerModel.findById(id);
+    return entity ? this.entityToModel(entity) : null;
+  }
+
   findByIds: (ids: string[]) => Promise<Customer[]>;
   findByName: (name: string) => Promise<Customer[]>;
 
@@ -48,7 +52,7 @@ export class CustomerRepositoryImplement implements CustomerRespository {
     const properties = model.properties();
     const schema = new this.customerModel({
       ...properties,
-      _id: properties['id'],
+      _id: properties['id'] || properties['_id'],
       createdAt: properties.openedAt,
       deletedAt: properties.closedAt,
     });
@@ -59,7 +63,7 @@ export class CustomerRepositoryImplement implements CustomerRespository {
     const model = entity.toObject() as Omit<CustomerEntity, keyof Schema>;
     return this.customerFactory.reconstitute({
       ...model,
-      id: model['id'],
+      id: model['id'] || model['_id'],
       openedAt: model.createdAt,
       closedAt: model.deletedAt,
     });

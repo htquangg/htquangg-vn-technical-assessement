@@ -2,7 +2,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { AggregateRoot } from '@nestjs/cqrs';
 import * as bcrypt from 'bcrypt';
 import { ErrorMessage } from './error';
-import { CustomerOpenedEvent } from './events';
+import { CustomerClosedEvent, CustomerOpenedEvent } from './events';
 
 export type CusomerEssentialProperties = Required<{
   readonly id: string;
@@ -25,7 +25,7 @@ export interface Customer {
   properties: () => CustomerProperties;
   open: (password: string) => void;
   update: (data: Partial<CustomerProperties>) => void;
-  close: (password: string) => void;
+  close: () => void;
   commit: () => void;
 }
 
@@ -72,6 +72,12 @@ export class CustomerImplement extends AggregateRoot implements Customer {
     this.password = bcrypt.hashSync(password, salt);
     this.updatedAt = new Date();
   }
+
   update: (data: Partial<Omit<CustomerProperties, 'password'>>) => void;
-  close: (password: string) => void;
+
+  close(): void {
+    this.closedAt = new Date();
+    this.updatedAt = new Date();
+    this.apply(Object.assign(new CustomerClosedEvent(), this));
+  }
 }

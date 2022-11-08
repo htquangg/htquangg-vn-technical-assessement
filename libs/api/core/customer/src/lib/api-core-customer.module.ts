@@ -1,8 +1,9 @@
 import { Module, Provider } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
-import { OpenCustomerHandler } from './applications';
+import { CloseCustomerHandler, OpenCustomerHandler } from './applications';
 import { CustomerOpenedHandler } from './applications/events';
+import { CustomerClosedHandler } from './applications/events/handlers/customer-closed.handler';
 import { InjectionToken } from './applications/injection.token';
 import { CustomerFactory } from './domains';
 import {
@@ -20,7 +21,12 @@ const infrastructures: Provider[] = [
   },
 ];
 
-const applications = [OpenCustomerHandler, CustomerOpenedHandler];
+const applications = [
+  OpenCustomerHandler,
+  CustomerOpenedHandler,
+  CloseCustomerHandler,
+  CustomerClosedHandler,
+];
 
 const domains = [CustomerFactory];
 

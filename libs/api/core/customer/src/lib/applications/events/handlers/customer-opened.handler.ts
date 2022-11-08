@@ -12,6 +12,6 @@ export class CustomerOpenedHandler
   constructor() {}
 
   async handle(event: CustomerOpenedEvent): Promise<void> {
-    this.logger.log(`[CustomerOpenedEvent]: ${JSON.stringify(event)}`);
+    this.logger.log(`[${CustomerOpenedEvent.name}]: ${JSON.stringify(event)}`);
   }
 }
