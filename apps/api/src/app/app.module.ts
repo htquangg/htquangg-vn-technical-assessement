@@ -1,20 +1,31 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 import { ApiCoreModule } from './api-core.module';
-import { MongooseModule } from '@nestjs/mongoose';
+
+import config from '../config';
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      useFactory: () => ({
-        uri: 'mongodb://root:root@127.0.0.1:27017',
-        dbName: 'test',
-      }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config],
     }),
-    // MongooseModule.forRoot('mongodb://root:root@127.0.0.1:27017'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<MongooseModuleOptions> => {
+        return {
+          uri: configService.get('MONGO_URI'),
+          dbName: configService.get('MONGO_DATABASE'),
+        };
+      },
+      inject: [ConfigService],
+    }),
     ApiCoreModule,
   ],
   controllers: [AppController],
