@@ -7,18 +7,19 @@ import { FindCustomersQuery } from '../impl';
 import {
   FindCustomersResult,
   ItemInFindCustomersResult,
-} from './find-customers.results';
+} from '../results/find-customers.result';
 
 @QueryHandler(FindCustomersQuery)
-export class FindAccountsHandler
+export class FindCustomersHandler
   implements IQueryHandler<FindCustomersQuery, FindCustomersResult>
 {
   constructor(
-    @Inject(InjectionToken.ACCOUNT_QUERY) readonly accountQuery: CustomerQuery,
+    @Inject(InjectionToken.CUSTOMER_QUERY)
+    readonly customerQuery: CustomerQuery,
   ) {}
 
   async execute(query: FindCustomersQuery): Promise<FindCustomersResult> {
-    return (await this.accountQuery.find(query.offset, query.limit)).map(
+    return (await this.customerQuery.find(query.offset, query.limit)).map(
       this.filterResultProperties,
     );
   }

@@ -13,13 +13,16 @@ export class CustomerQueryImplement implements CustomerQuery {
   ) {}
   async findById(id: string): Promise<undefined | Customer> {
     return this.convertCustomerFromEntity(
-      await this.customerModel.findOne({ id }),
+      await this.customerModel.findOne({ id, deletedAt: { $eq: null } }),
     );
   }
 
   async find(offset: number, limit: number): Promise<Customers> {
     return this.convertCustomersFromEntities(
-      await this.customerModel.find().skip(offset).limit(limit),
+      await this.customerModel
+        .find({ deletedAt: { $eq: null } })
+        .skip(offset)
+        .limit(limit),
     );
   }
 

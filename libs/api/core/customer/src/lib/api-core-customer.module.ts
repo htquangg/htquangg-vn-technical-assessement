@@ -4,7 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import {
   CloseCustomerHandler,
-  FindAccountsHandler,
+  FindCustomerByIdHandler,
+  FindCustomersHandler,
   OpenCustomerHandler,
 } from './applications';
 import { CustomerOpenedHandler } from './applications/events';
@@ -26,7 +27,7 @@ const infrastructures: Provider[] = [
     useClass: CustomerRepositoryImplement,
   },
   {
-    provide: InjectionToken.ACCOUNT_QUERY,
+    provide: InjectionToken.CUSTOMER_QUERY,
     useClass: CustomerQueryImplement,
   },
 ];
@@ -36,7 +37,8 @@ const applications = [
   CustomerOpenedHandler,
   CloseCustomerHandler,
   CustomerClosedHandler,
-  FindAccountsHandler,
+  FindCustomersHandler,
+  FindCustomerByIdHandler,
 ];
 
 const domains = [CustomerFactory];

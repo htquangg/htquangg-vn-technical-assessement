@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   FindCustomersResult,
   ItemInFindCustomersResult,
-} from '../../applications/queries/handlers/find-customers.results';
+} from '../../applications/queries';
 
 class FindCustomerItem extends ItemInFindCustomersResult {
-  @ApiProperty({ format: 'id' })
+  @ApiProperty({ format: 'uuid' })
   readonly id: string;
 
   @ApiProperty({ example: 'Quang' })
@@ -20,5 +20,5 @@ class FindCustomerItem extends ItemInFindCustomersResult {
 
 export class FindCustomersResponseDTO {
   @ApiProperty({ type: [FindCustomerItem] })
-  readonly accounts: FindCustomersResult;
+  readonly customers: FindCustomersResult;
 }

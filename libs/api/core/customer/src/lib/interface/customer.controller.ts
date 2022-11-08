@@ -15,7 +15,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { FindCustomersQuery } from '../applications';
+import { FindCustomerByIdQuery, FindCustomersQuery } from '../applications';
 import {
   CloseCustomerCommand,
   OpenCustomerCommand,
@@ -24,6 +24,8 @@ import {
 import {
   CreateCustomerBodyDTO,
   DeleteCustomerParamDTO,
+  FindCustomerByIdResponseDTO,
+  FindCustomerByIdParamDTO,
   FindCustomersQueryDTO,
   FindCustomersResponseDTO,
 } from './dtos';
@@ -61,7 +63,25 @@ export class CustomerController {
     @Query() queryDto: FindCustomersQueryDTO,
   ): Promise<FindCustomersResponseDTO> {
     const query = new FindCustomersQuery(queryDto.offset, queryDto.limit);
-    return { accounts: await this.queryBus.execute(query) };
+    return { customers: await this.queryBus.execute(query) };
+  }
+
+  @Get('/:id')
+  @ApiResponse({
+    status: 200,
+    description: ResponseDescription.OK,
+    type: FindCustomerByIdResponseDTO,
+  })
+  @ApiBadRequestResponse({ description: ResponseDescription.BAD_REQUEST })
+  @ApiNotFoundResponse({ description: ResponseDescription.NOT_FOUND })
+  @ApiInternalServerErrorResponse({
+    description: ResponseDescription.INTERNAL_SERVER_ERROR,
+  })
+  async findCustomerById(
+    @Param() param: FindCustomerByIdParamDTO,
+  ): Promise<FindCustomerByIdResponseDTO> {
+    const query = new FindCustomerByIdQuery(param.id);
+    return this.queryBus.execute(query);
   }
 
   @Delete('/:id')
