@@ -1,0 +1,16 @@
+node_modules
+.vscode
+.gitignore
+Dockerfile
+docker-compose.yml
+dist
+*.yaml
+.husky
+*.md
+yarn.lock
+.eslintrc
+.eslintignore
+.editorconfig
+.prettierrc
+.prettierignore
+jest.config.ts

@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: 'htquangg-mongo'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    networks:
+        - htquangg-api
+    # volumes:
+    #   - ./mongo-data:/data/db
+    #   - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+
+networks:
+    htquangg-api:
+        driver: bridge
